@@ -4,17 +4,6 @@ language:
 jdk:
   - oraclejdk8
   
-  
-  jobs:
-  include:
-    - stage: test
-      script: ./test 1
-    - # stage name not required, will continue to use `test`
-      script: ./test 2
-    - stage: deploy
-      script: ./deploy
-  
-
 script:
   - gradle build jacocoTestReport
   
