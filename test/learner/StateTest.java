@@ -1,92 +1,76 @@
-import java.io.IOException;
-import java.util.StringTokenizer;
+package learner;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-/*
-自己的wordcount改良
-可以去除不想要的字元 並且將輸入進來的string 分開讀取成char 
-計算字母出現次數
-*/
+/**
+ *
+ * Copyright (c) 2017 Yu-Fang Chen
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ * 
+ */
 
-public class WordCount3 {
-   
-  public static class TokenizerMapper
-       extends Mapper<Object, Text, Text, IntWritable>{
-      
-    private final static IntWritable one = new IntWritable(1);
-    private Text word = new Text("I dont want it");
-    private static String leng = new String();
-    private static int len ;
-    private static char ch ;
-    private static String used = new String("I dont want it");
+import static org.junit.Assert.*;
 
-    public void map(Object key, Text value, Context context
-                    ) throws IOException, InterruptedException {
-      StringTokenizer itr = new StringTokenizer(value.toString());
-      while (itr.hasMoreTokens()) {
-        leng = itr.nextToken();
-        //leng.set(itr.nextToken());
-         len = leng.length();
-         //word = used ;
-         for(int i=0;i<len;i++)
-         {
-            //used = leng[i];
-            ch = leng.charAt(i);
-            //word = leng.charAt(i);
-            //word(char ch);
-            //word.set(used);
-          if(ch=='I')
-          {
-             context.write(word, one);
-            continue;
-          }
-           context.write(new Text(String.valueOf(ch)), one);
+import java.util.ArrayList;
+import java.util.HashMap;
 
-            //context.write(word, one);
-         }
-           /*
-        word.set(itr.nextToken());
-        context.write(word, one);
-           */
-      }
-    }
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import learner.State;
+
+public class StateTest {
+
+  @BeforeClass
+  public static void setUpBeforeClass() throws Exception {
   }
 
-  public static class IntSumReducer
-       extends Reducer<Text,IntWritable,Text,IntWritable> {
-    private IntWritable result = new IntWritable();
-
-    public void reduce(Text key, Iterable<IntWritable> values,
-                       Context context
-                       ) throws IOException, InterruptedException {
-      int sum = 0;
-      for (IntWritable val : values) {
-        sum += val.get();
-      }
-      result.set(sum);
-      context.write(key, result);
-    }
+  @AfterClass
+  public static void tearDownAfterClass() throws Exception {
   }
 
-  public static void main(String[] args) throws Exception {
-    Configuration conf = new Configuration();
-    Job job = Job.getInstance(conf, "word count");
-    job.setJarByClass(WordCount3.class);
-    job.setMapperClass(TokenizerMapper.class);
-    job.setCombinerClass(IntSumReducer.class);
-    job.setReducerClass(IntSumReducer.class);
-    job.setOutputKeyClass(Text.class);
-    job.setOutputValueClass(IntWritable.class);
-    FileInputFormat.addInputPath(job, new Path(args[0]));
-    FileOutputFormat.setOutputPath(job, new Path(args[1]));
-    System.exit(job.waitForCompletion(true) ? 0 : 1);
+  @Before
+  public void setUp() throws Exception {
+
   }
+
+  @After
+  public void tearDown() throws Exception {
+  }
+
+  @Test
+  public void testStateAsTheKeyInHashMap() {
+    ArrayList<String> word1=new ArrayList<String>();
+    ArrayList<String> word2=new ArrayList<String>();
+    word1.add("A");
+    word2.add("A");
+    State s1=new State(word1);
+    State s2=new State(word2);
+    HashMap<State, Integer> stateValueMap =new HashMap<State, Integer>();
+    stateValueMap.put(s1, 1);
+    stateValueMap.put(s2, 2);
+
+    assertTrue(stateValueMap.get(s1)==2);
+
+
+  }
+
 }
