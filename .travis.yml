@@ -14,8 +14,7 @@ jdk:
     - stage: deploy
       script: ./deploy
   
-  
-  
+
 script:
   - gradle build jacocoTestReport
   
