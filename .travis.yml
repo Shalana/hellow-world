@@ -4,9 +4,14 @@ language:
 jdk:
   - oraclejdk8
   
-sudo: false # faster builds
-
-script: "mvn cobertura:cobertura"
+before_install:  
+#  - mvn install -Dmaven.javadoc.skip=true  
+   - "echo skipped"  
+install:  
+  - "echo skipped"  
+script:  
+#  - "echo skipped"   
+  - mvn install -Dmaven.javadoc.skip=true    
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
