@@ -36,7 +36,22 @@
 			<artifactId>hadoop-client</artifactId>
 			<version>2.6.1</version>
 		</dependency>
-        
-         
     </dependencies>
+	
+	
+	              <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.7</version>
+				<configuration>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+					<check />
+				</configuration>
+			</plugin>
+	
+	
+	
 </project>
